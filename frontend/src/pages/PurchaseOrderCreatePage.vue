@@ -96,7 +96,7 @@ function validateAndSave() {
     });
 }
 
-function submit() {
+async function submit() {
   if (!canSubmit.value) {
     safeAlert('Cannot submit: fix validation first');
     return;
@@ -116,24 +116,22 @@ function submit() {
     })),
   };
 
-  (async () => {
+  try {
+    const created = await api.createPurchaseOrder(payload);
     try {
-      const created = await api.createPurchaseOrder(payload);
-      // submit
-      try {
-        const submitted = await api.submitPurchaseOrder(created.id);
-        safeAlert('PO submitted: ' + (submitted.poNumber || created.id));
-        console.log('submitted PO', submitted);
-      } catch (err) {
-        safeAlert('Submit failed: ' + (err.message || String(err)));
-        console.error(err);
-      }
+      const submitted = await api.submitPurchaseOrder(created.id);
+      safeAlert('PO submitted: ' + (submitted.poNumber || created.id));
+      console.log('submitted PO', submitted);
     } catch (err) {
-      // creation failed (possibly validation 422)
       safeAlert('Submit failed: ' + (err.message || String(err)));
       console.error(err);
+      throw err;
     }
-  })();
+  } catch (err) {
+    safeAlert('Submit failed: ' + (err.message || String(err)));
+    console.error(err);
+    throw err;
+  }
 }
 </script>
 

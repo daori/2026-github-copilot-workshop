@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import PurchaseOrderCreatePage from '../../src/pages/PurchaseOrderCreatePage.vue';
 
 // Mock API module
@@ -12,7 +12,7 @@ vi.mock('../../src/api', () => ({
 
 describe('PurchaseOrderCreatePage', () => {
   it('disables submit when no supplier or lines', () => {
-    const wrapper = mount(PurchaseOrderCreatePage, { global: { stubs: ['POHeaderForm', 'LineAllocationTable'] } });
+    const wrapper = shallowMount(PurchaseOrderCreatePage);
     const submitBtn = wrapper.find('button.primary');
     expect(submitBtn.attributes('disabled')).toBeDefined();
   });
@@ -20,7 +20,7 @@ describe('PurchaseOrderCreatePage', () => {
   it('calls API create on Save with mapped payload', async () => {
     const { api } = await import('../../src/api');
 
-    const wrapper = mount(PurchaseOrderCreatePage, { global: { stubs: ['POHeaderForm', 'LineAllocationTable'] } });
+    const wrapper = shallowMount(PurchaseOrderCreatePage);
 
     // set component state directly to avoid exercising child DOM (v-model cycles)
     wrapper.vm.header.supplier = 'ACME Corp';
@@ -42,7 +42,7 @@ describe('PurchaseOrderCreatePage', () => {
   it('performs create+submit on Submit click when valid', async () => {
     const { api } = await import('../../src/api');
 
-    const wrapper = mount(PurchaseOrderCreatePage);
+    const wrapper = shallowMount(PurchaseOrderCreatePage);
 
     // set component state directly
     wrapper.vm.header.supplier = 'ACME Corp';
