@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# pre-push hook — run the full test suite and block the push if any test fails.
+#
+# Activated via:  git config core.hooksPath .githooks
+# Bypass once with (use sparingly):  git push --no-verify
+
+echo "▶ pre-push: running 'npm test' before pushing..."
+
+if npm test; then
+  echo "✓ pre-push: all tests passed — pushing."
+  exit 0
+else
+  echo ""
+  echo "✖ pre-push: tests failed — push aborted."
+  echo "  Fix the failing test(s), or bypass with 'git push --no-verify' (not recommended)."
+  exit 1
+fi
