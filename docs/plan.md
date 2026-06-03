@@ -393,6 +393,23 @@ Suggested minimum:
 
 ---
 
+## Implementation & Documentation Checklist
+
+Use this short checklist for PR reviews and workshop exercises.
+
+- **Code Quality:** follow existing project patterns; keep route handlers thin and services focused.
+- **Validation:** validate requests at the route boundary; return clear HTTP status codes and error messages.
+- **Atomicity:** perform allocation/receipt updates inside database transactions to avoid race conditions.
+- **Migrations:** add schema changes to `db/migrations/` and seeds to `db/seeds/`; ensure scripts are idempotent.
+- **Unit Tests:** add focused Jest tests for business rules, edge cases, and failure paths.
+- **E2E Tests:** add Playwright scenarios for the happy path and at least one negative flow (over-allocation).
+- **Docs:** update README or `docs/` with new endpoints, request/response examples, and key business rules.
+- **Commits/PRs:** use small, focused commits; PR description must include verification steps and test notes.
+- **CI:** ensure linting and tests run in CI; do not merge failing builds.
+- **Secrets:** never commit secrets; include a `.env.example` with non-sensitive defaults.
+- **UI Consistency:** follow existing CSS variables and component patterns; keep UX accessible and testable.
+
+
 ## 8) Local Run Baseline
 
 ### Docker

@@ -61,3 +61,19 @@ Reference plan: `docs/plan.md`.
 
 ## Workshop-First Principle
 When there is a trade-off between production robustness and workshop clarity, choose workshop clarity.
+
+## Implementation & Documentation Checklist
+
+Use this short checklist for contributor guidance, PR reviews, and workshop exercises.
+
+- **Follow Patterns:** keep route handlers thin; put business logic in service functions.
+- **Validate Early:** validate incoming requests at the route layer and return clear HTTP codes/messages.
+- **Database Safety:** use transactions for allocation/receipt updates; add migrations to `db/migrations/` and seeds to `db/seeds/`.
+- **Tests First:** add focused Jest tests for business rules (edge cases and failure paths) before UI work.
+- **E2E Coverage:** add a Playwright scenario for the happy path and one negative case (e.g., over-allocation).
+- **Document Changes:** update `README.md` or `docs/` with new endpoints, sample requests/responses, and key business rules.
+- **Small PRs:** use small, focused commits; PR description must include verification steps and test notes.
+- **CI Gate:** ensure linting and tests run in CI; do not merge failing builds.
+- **No Secrets:** never commit secrets; include a `.env.example` with non-sensitive defaults.
+- **UI Consistency:** respect existing CSS variables and component patterns; keep forms accessible and testable.
+

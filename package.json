@@ -20,6 +20,8 @@
     "test:e2e": "playwright test",
     "test:e2e:list": "playwright test --list",
     "test:e2e:ui": "playwright test --ui"
+    ,
+    "setup-hooks": "git config core.hooksPath .githooks"
   },
   "author": "Arie M. Prasetyo",
   "license": "ISC",

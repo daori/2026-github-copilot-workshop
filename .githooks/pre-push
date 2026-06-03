@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -e
+echo "Running npm test before push..."
+
+# Run the Node-based test runner (keeps cross-platform behavior)
+if ! node tools/pre-push.js; then
+  echo "Pre-push: tests failed. Aborting push." >&2
+  exit 1
+fi
+
+echo "Pre-push: tests passed. Proceeding with push."
+exit 0
