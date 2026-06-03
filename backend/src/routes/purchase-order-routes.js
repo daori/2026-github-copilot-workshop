@@ -2,6 +2,7 @@ import {
   createPurchaseOrder,
   getOpenPoLines,
   getPurchaseOrderById,
+  listAllocatablePrLines,
   listPurchaseOrders,
   submitPurchaseOrder,
 } from '../services/purchase-order-service.js';
@@ -9,6 +10,12 @@ import {
 export default async function purchaseOrderRoutes(fastify) {
   fastify.get('/api/purchase-orders', async (request, reply) => {
     const items = await listPurchaseOrders(fastify.db);
+    return { items };
+  });
+
+  // Approved PR lines available for allocation onto a new PO.
+  fastify.get('/api/purchase-orders/allocatable-pr-lines', async () => {
+    const items = await listAllocatablePrLines(fastify.db);
     return { items };
   });
 

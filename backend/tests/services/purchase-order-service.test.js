@@ -2,6 +2,7 @@ import { jest, describe, test, expect } from '@jest/globals';
 import {
   createPurchaseOrder,
   listPurchaseOrders,
+  listAllocatablePrLines,
   getOpenPoLines,
   submitPurchaseOrder,
 } from '../../src/services/purchase-order-service.js';
@@ -467,6 +468,45 @@ describe('purchase-order-service list functions', () => {
         updatedAt: '2026-05-01T10:00:00.000Z',
       },
     ]);
+  });
+
+  test('listAllocatablePrLines maps rows and computes remaining qty', async () => {
+    const db = {
+      query: jest.fn(() => ({
+        rows: [
+          {
+            pr_line_id: 'pr-line-1',
+            line_no: 1,
+            item_code: 'ITEM-001',
+            item_name: 'Bearing-6205',
+            qty_requested: 20,
+            qty_allocated: 5,
+            uom: 'PCS',
+            est_unit_price: 150000,
+            site_code: 'WH-JKT',
+            required_date: null,
+            budget_center: 'CC-01',
+            pr_id: 'pr-1',
+            pr_number: 'PR-001',
+          },
+        ],
+      })),
+    };
+
+    const result = await listAllocatablePrLines(db);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      prLineId: 'pr-line-1',
+      prNumber: 'PR-001',
+      prLineNo: 1,
+      itemCode: 'ITEM-001',
+      qtyRequested: 20,
+      qtyAllocated: 5,
+      remainingQty: 15,
+      estUnitPrice: 150000,
+      siteCode: 'WH-JKT',
+    });
   });
 
   test('getOpenPoLines returns null when PO not found', async () => {

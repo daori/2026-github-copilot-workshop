@@ -127,6 +127,39 @@ export async function getPurchaseOrderById(db, id) {
   };
 }
 
+// Approved PR lines that still have quantity left to allocate to a PO.
+// Powers the "Approved PR Lines" picker on the Create Purchase Order page.
+export async function listAllocatablePrLines(db) {
+  const { rows } = await db.query(
+    `SELECT pl.id AS pr_line_id, pl.line_no, pl.item_code, pl.item_name,
+            pl.qty_requested, pl.qty_allocated, pl.uom, pl.est_unit_price,
+            pl.site_code, pl.required_date, pl.budget_center,
+            pr.id AS pr_id, pr.pr_number
+     FROM pr_lines pl
+     JOIN purchase_requisitions pr ON pr.id = pl.pr_id
+     WHERE pr.status = 'APPROVED'
+       AND (pl.qty_requested - pl.qty_allocated) > 0
+     ORDER BY pr.pr_number ASC, pl.line_no ASC`
+  );
+
+  return rows.map((row) => ({
+    prLineId: row.pr_line_id,
+    prId: row.pr_id,
+    prNumber: row.pr_number,
+    prLineNo: row.line_no,
+    itemCode: row.item_code,
+    itemName: row.item_name,
+    uom: row.uom,
+    qtyRequested: Number(row.qty_requested),
+    qtyAllocated: Number(row.qty_allocated),
+    remainingQty: Number(row.qty_requested) - Number(row.qty_allocated),
+    estUnitPrice: Number(row.est_unit_price),
+    siteCode: row.site_code,
+    requiredDate: row.required_date,
+    budgetCenter: row.budget_center,
+  }));
+}
+
 export async function getOpenPoLines(db, id) {
   const headerResult = await db.query(
     `SELECT id, po_number, status FROM purchase_orders WHERE id = $1`,
